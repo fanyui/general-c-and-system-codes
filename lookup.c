@@ -16,61 +16,47 @@ struct nlist *install_lookup(char *,char *);
 struct nlist *lookup1(char *);
 
 int main(){
-	struct nlist *harisu_test,*lukuptest,me;
-	int input;
-	char *har,*definition;
-	printf("%d\n",hash1("school"));
-		printf("name definition\n");
-		scanf("%d",&input);
-		printf("%d",input);
-		scanf("%s",&har);
-		printf("%s",har);
-		harisu_test=install_lookup(har,definition);
+	struct nlist *harisu_test;
+	char name[20],definition[20];
+		printf("name, definition\n");
+		scanf("%s",definition);
+		scanf("%s",name);
+		harisu_test=install_lookup(name,definition);
 
 	return 0;
 }
 
 
-
+//generate the index to be used in the lookup table for storing the name and definition of the string *s
 unsigned hash1(char *s){
-
 	unsigned hash_value;
 	for(hash_value=0;*s != '\0';s++)
 		hash_value += *s + 31 ;
 	return hash_value % HASHSIZE;
 
 }
-
+//searches the lookup table for the presence of the string s if available the pointer to that structure is return else NULL
 struct nlist *lookup1(char *s){
 
 	struct nlist *np;
 	unsigned num=hash1(s);
-	printf("lookup hash is %d",num);
 	np=hashtable[num];
-	printf("%d",*np);
+	if(np==NULL)
+	return NULL;
 	for ( ;np != NULL;np=np->next)
 		if(strcmp(np->name,s)==0)
 			return np;
 		else 
-			//printf("lookup suceeded\n");
-			return NULL;
-	if(np==NULL)
-	return NULL;
-	
+			return NULL;	
 }
-
+//function to insert a name and it definition into the lookup table
 struct nlist *install_lookup(char *name,char *definition){
 	unsigned hashvalue;
 	struct nlist *np;
-	printf("malloc failed 1\n");
 	np=lookup1(name);
-	printf("lookup succeeded\n");
 	if(np==NULL){
-		printf("malloc is not working");
 		np=(struct nlist *)malloc(sizeof(*np));
-		printf("malloc failed 2\n");
 		if(np==NULL|| (np->name=strdup(name))==NULL){
-			//printf("malloc failed\n");
 			return NULL;
 
 		}
